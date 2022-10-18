@@ -2,10 +2,11 @@ CFLAGS= -g -std=c11 -Wall -Wextra -pedantic -D_XOPEN_SOURCE=700
 
 all: bruh
 
-bruh: main.o
+run:
+	./main
 
-main.o:
-	cc $(CFLAGS) ./src/main.c
+bruh:
+	cc $(CFLAGS) ./src/main.c ./src/shell.c -o main
 
 clean:
 	@rm -f $(OBJ) main.o myshell *~
