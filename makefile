@@ -1,3 +1,12 @@
-main: main
+CFLAGS= -g -std=c11 -Wall -Wextra -pedantic -D_XOPEN_SOURCE=700
 
-main.o: ./src/main.c
+all: bruh
+
+bruh: main.o
+
+main.o:
+	cc $(CFLAGS) ./src/main.c
+
+clean:
+	@rm -f $(OBJ) main.o myshell *~
+
