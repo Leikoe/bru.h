@@ -44,6 +44,9 @@ void shell_execute_line( shell_t *s ) {
     } else if (strcmp(cmd, "exit") == 0) {
         s->running = false;
         printf("quitting shell..");
+    } else if (strcmp(cmd, "!") == 0) {
+        char *shell_env_var = getenv("SHELL");
+        system(shell_env_var);
     } else {
         printf("unknown command");
     }
