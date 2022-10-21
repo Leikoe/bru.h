@@ -40,7 +40,10 @@ void shell_execute_line( struct Shell *s ) {
     }
 
     if (strcmp(cmd, "help") == 0) {
-        printf("help is bad");
+        printf("type exit to quit");
+    } else if (strcmp(cmd, "exit") == 0) {
+        s->running = false;
+        printf("quitting shell..");
     } else {
         printf("unknown command");
     }
