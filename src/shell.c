@@ -15,6 +15,7 @@ void shell_run( struct Shell *s ) {
     s->running = true;
 
     while (s->running) {
+        printf("$ ");
         shell_read_line(s);
         shell_execute_line(s);
     }
@@ -39,8 +40,10 @@ void shell_execute_line( struct Shell *s ) {
     }
 
     if (strcmp(cmd, "help") == 0) {
-        printf("help is bad\n");
+        printf("help is bad");
     } else {
-        printf("unknown command\n");
+        printf("unknown command");
     }
+
+    printf("\n");
 }
