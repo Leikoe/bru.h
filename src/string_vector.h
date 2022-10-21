@@ -2,6 +2,8 @@
 // Created by Linkenz on 18/10/2022.
 //
 
+#include <stdlib.h>
+
 #ifndef BRU_H_STRING_VECTOR_H
 #define BRU_H_STRING_VECTOR_H
 
@@ -21,6 +23,6 @@ size_t string_vector_size(const struct StringVector * this);
 char * string_vector_get(const struct StringVector * this,
 size_t index);
 
-struct StringVector split_line(char * line)
+struct StringVector split_line(char * line);
 
 #endif //BRU_H_STRING_VECTOR_H

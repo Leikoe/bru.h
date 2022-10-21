@@ -1,7 +1,8 @@
 #include <stdio.h>
 #include <sys/types.h>
-
+#include "string_vector.h"
 #include "shell.h"
+#include <string.h>
 
 void shell_init( struct Shell *s ) {
     s->running     = false;
@@ -30,5 +31,16 @@ void shell_read_line( struct Shell *s ) {
 }
 
 void shell_execute_line( struct Shell *s ) {
-    printf("%s", s->buffer);
+    struct StringVector sv = split_line(s->buffer);
+    char *cmd = string_vector_get(&sv,0);
+
+    if (cmd == NULL) {
+        return;
+    }
+
+    if (strcmp(cmd, "help") == 0) {
+        printf("help is bad\n");
+    } else {
+        printf("unknown command\n");
+    }
 }
