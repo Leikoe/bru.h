@@ -3,6 +3,8 @@
 #include "string_vector.h"
 #include "shell.h"
 #include <string.h>
+#include <unistd.h>
+
 
 void shell_init( shell_t *s ) {
     s->running     = false;
@@ -41,12 +43,27 @@ void shell_execute_line( shell_t *s ) {
 
     if (strcmp(cmd, "help") == 0) {
         printf("type exit to quit");
+
     } else if (strcmp(cmd, "exit") == 0) {
         s->running = false;
         printf("quitting shell..");
+
     } else if (strcmp(cmd, "!") == 0) {
         char *shell_env_var = getenv("SHELL");
-        system(shell_env_var);
+        char *command = malloc(sizeof(char) * string_vector_size(&sv));
+        sprintf(command, "%s %s", shell_env_var, (char *)(s->buffer +1));
+        system(command);
+
+    } else if (strcmp(cmd, "cd") == 0) {
+        char *dst_dir = string_vector_get(&sv, 1);
+        chdir(dst_dir);
+
+    } else if (strcmp(cmd, "ls") == 0) {
+        system(s->buffer);
+
+    } else if (strcmp(cmd, "clear") == 0) {
+        system("clear");
+
     } else {
         printf("unknown command");
     }
