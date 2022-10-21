@@ -4,14 +4,14 @@
 #include "shell.h"
 #include <string.h>
 
-void shell_init( struct Shell *s ) {
+void shell_init( shell_t *s ) {
     s->running     = false;
     s->line_number = 0;
     s->buffer_size = 16;
     s->buffer      = malloc( s->buffer_size * sizeof( char ) );
 }
 
-void shell_run( struct Shell *s ) {
+void shell_run( shell_t *s ) {
     s->running = true;
 
     while (s->running) {
@@ -21,17 +21,17 @@ void shell_run( struct Shell *s ) {
     }
 }
 
-void shell_free( struct Shell *s ) {
+void shell_free( shell_t *s ) {
     free( s->buffer );
 }
 
-void shell_read_line( struct Shell *s ) {
+void shell_read_line( shell_t *s ) {
     // man 3 getline
     size_t linelen;
     linelen = getline( &(s->buffer), &( s->buffer_size ), stdin );
 }
 
-void shell_execute_line( struct Shell *s ) {
+void shell_execute_line( shell_t *s ) {
     struct StringVector sv = split_line(s->buffer);
     char *cmd = string_vector_get(&sv,0);
 

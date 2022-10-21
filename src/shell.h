@@ -9,18 +9,18 @@
 #ifndef BRU_H_SHELL_H
 #define BRU_H_SHELL_H
 
-struct Shell {
+typedef struct shell_t {
     bool   running;
     int    line_number;
     char  *buffer;
     size_t buffer_size;
-};
+} shell_t;
 
-void shell_init( struct Shell *s );
-void shell_run( struct Shell *s );
-void shell_free( struct Shell *s );
+void shell_init( shell_t *s );
+void shell_run( shell_t *s );
+void shell_free( shell_t *s );
 
-void shell_read_line( struct Shell *s );
-void shell_execute_line( struct Shell *s );
+void shell_read_line( shell_t *s );
+void shell_execute_line( shell_t *s );
 
 #endif //BRU_H_SHELL_H
