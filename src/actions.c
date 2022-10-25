@@ -15,6 +15,10 @@ static void do_exit(shell_t *this, const struct StringVector *args)
 static void do_cd(shell_t *this, const struct StringVector *args)
 {
     char *dst_dir = string_vector_get(args, 1);
+    if (dst_dir == NULL)
+    {
+        dst_dir = getenv("HOME");
+    }
     chdir(dst_dir);
     args;
 }
@@ -40,6 +44,12 @@ static void do_system(shell_t *this, const struct StringVector *args)
     args;
 }
 
+static void do_list(shell_t *this, const struct StringVector *args)
+{
+    system("ls");
+    args;
+}
+
 static void do_execute(shell_t *this, const struct StringVector *args)
 {
     char *file = string_vector_get(args, 0);
@@ -59,6 +69,7 @@ static struct {
         { .name = "help", .action = do_help},
         { .name = "?",    .action = do_help},
         { .name = "!",    .action = do_system},
+        { .name = "ls",    .action = do_list},
         { .name = NULL,   .action = do_execute}
 };
 
