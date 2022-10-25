@@ -3,7 +3,10 @@
 //
 
 #include "string_vector.h"
+
 #include <stdlib.h>
+#include <string.h>
+#include <ctype.h>
 
 void
 string_vector_init( struct StringVector *this, size_t capacity){
