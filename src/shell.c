@@ -46,5 +46,5 @@ void shell_execute_line( shell_t *s ) {
     a(s, &sv);
 
     printf("\n");
-    string_vector_free(sv);
+    string_vector_free(&sv);
 }

@@ -9,22 +9,26 @@ static void do_exit(shell_t *this, const struct StringVector *args)
 {
     this->running = false;
     printf("quitting shell..");
+    args;
 }
 
 static void do_cd(shell_t *this, const struct StringVector *args)
 {
     char *dst_dir = string_vector_get(args, 1);
     chdir(dst_dir);
+    args;
 }
 
 static void do_pwd(shell_t *this, const struct StringVector *args)
 {
     system("pwd");
+    args;
 }
 
 static void do_help(shell_t *this, const struct StringVector *args)
 {
     printf("-> commands: exit, cd, help, ?.\n");
+    args;
 }
 
 static void do_system(shell_t *this, const struct StringVector *args)
@@ -33,15 +37,16 @@ static void do_system(shell_t *this, const struct StringVector *args)
     char *command = malloc(sizeof(char) * string_vector_size(args));
     sprintf(command, "%s %s", shell_env_var, (char *)(this->buffer +1));
     system(command);
+    args;
 }
 
 static void do_execute(shell_t *this, const struct StringVector *args)
 {
     char *file = string_vector_get(args, 0);
-    char *args_ = string_vector_slice(args, 1);
-    if (file != NULL && fork()==0) {
-        execlp(file, args);
-    }
+//    char *args_ = string_vector_slice(args, 1);
+//    if (file != NULL && fork()==0) {
+//        execlp(file, args);
+//    }
 }
 
 static struct {
