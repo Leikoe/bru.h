@@ -6,8 +6,7 @@ run:
 	./main
 
 bruh:
-	cc $(CFLAGS) ./src/main.c ./src/shell.c ./src/string_vector.c -o main
+	cc $(CFLAGS) ./src/main.c ./src/shell.c ./src/string_vector.c ./src/actions.c -o main
 
 clean:
-	@rm -f $(OBJ) main.o myshell *~
-
+	rm -f main.o main
