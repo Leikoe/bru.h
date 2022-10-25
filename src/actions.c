@@ -46,9 +46,14 @@ static void do_system(shell_t *this, const struct StringVector *args)
 
 static void do_list(shell_t *this, const struct StringVector *args)
 {
-    system("ls");
-    args;
+    pid_t p = fork();
+    if (p == 0) {
+        execvp("ls", args->strings);
+        exit (EXIT_SUCCESS);
+    }
+    wait(&p);
 }
+
 
 static void do_execute(shell_t *this, const struct StringVector *args)
 {
@@ -69,7 +74,7 @@ static struct {
         { .name = "help", .action = do_help},
         { .name = "?",    .action = do_help},
         { .name = "!",    .action = do_system},
-        { .name = "ls",    .action = do_list},
+        { .name = "ls",   .action = do_list},
         { .name = NULL,   .action = do_execute}
 };
 
