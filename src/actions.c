@@ -33,22 +33,15 @@ static void do_help(shell_t *this, const struct StringVector *args)
 
 static void do_system(shell_t *this, const struct StringVector *args)
 {
-    char *shell_env_var = getenv("SHELL");
-//    char *command = malloc(sizeof(char) * string_vector_size(args));
-//    sprintf(command, "%s %s", shell_env_var, (char *)(this->buffer +1));
-//    system(command);
     char *file = string_vector_get(args, 1);
     string_vector_add(args, NULL, NULL);
 
     pid_t p = fork();
     if (p == 0) {
-        printf("je suis le processus fils\n");
         execvp(file, args->strings + 1);
         exit(EXIT_SUCCESS);
     }
 
-    printf("je suis le processus père\n");
-    printf("le processus fils a le numéro %d\n",p);
     wait(&p);
 }
 
