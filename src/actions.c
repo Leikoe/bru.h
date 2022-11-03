@@ -39,10 +39,11 @@ pid_t start(const char *file, char * const *args, bool blocking) {
         execvp(file, args);
         exit(EXIT_SUCCESS);
     } else {
+        int pid = p;
         if (!blocking) {
             wait(&p);
         }
-        return p;
+        return pid;
     }
 }
 
