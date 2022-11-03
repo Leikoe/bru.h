@@ -10,14 +10,63 @@ void shell_init( shell_t *s ) {
     s->running     = false;
     s->line_number = 0;
     s->buffer_size = 16;
+    s->jobs_capacity = 100;
+    s->jobs_size   = 0;
     s->buffer      = malloc( s->buffer_size * sizeof( char ) );
+    s->jobs        = malloc( s->jobs_capacity * sizeof ( job_t ) );
+}
+
+int shell_add_job( shell_t *s, job_t job ) {
+    if (s->jobs_size +1 >= s->jobs_capacity) {
+        printf("ERROR: Cannot add any more jobs !");
+        return -1;
+    }
+
+    int i=0;
+    while (i < s->jobs_capacity) {
+        if (s->jobs[i].name[0] == '\0') {
+            s->jobs[i] = job;
+            s->jobs_size++;
+            return i;
+        }
+        i++;
+    }
+    printf("ERROR: Couldn't find any space to add new job to jobs !");
+    return -1;
+}
+
+void shell_display_jobs( shell_t *s ) {
+    printf("PID     NAME\n");
+
+    int i=0;
+    while (i < s->jobs_capacity) {
+        if (s->jobs[i].name[0] != '\0') {
+            printf("%d      %s\n", s->jobs[i].pid, &s->jobs[i].name[0]);
+        }
+        i++;
+    }
+}
+
+void shell_remove_job( shell_t *s, int job_id) {
+    if (job_id > s->jobs_size) {
+        printf("ERROR: Cannot remove invalid job_id");
+        return;
+    }
+    s->jobs[job_id].name[0] = '\0';
+    s->jobs[job_id].pid = -1;
+}
+
+void print_prompt() {
+    printf("$");
+
+    printf(" ");
 }
 
 void shell_run( shell_t *s ) {
     s->running = true;
 
     while (s->running) {
-        printf("$ ");
+        print_prompt();
         shell_read_line(s);
         shell_execute_line(s);
     }
