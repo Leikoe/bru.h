@@ -1,9 +1,23 @@
 #include <stdlib.h>
 #include "shell.h"
 
+static shell_t shell;
+
+void handle_sigchld(int sig) {
+    pid_t p = wait(NULL);
+
+    // print prompt again if process was FG, BG shouldn't write to stdout so no need
+    job_status s = shell_remove_job(&shell, p);
+    if (s == FG) {
+        shell_print_prompt();
+    }
+}
+
 int main( int argc, char **argv )
 {
-    shell_t shell;
+
+    signal(SIGCHLD, handle_sigchld);
+
     shell_init( &shell );
     shell_run( &shell );
     shell_free( &shell );

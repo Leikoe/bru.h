@@ -10,7 +10,7 @@
 static void do_exit(shell_t *this, const struct StringVector *args)
 {
     this->running = false;
-    printf("quitting shell..");
+    printf("quitting shell..\n");
     args;
 }
 
@@ -40,7 +40,7 @@ pid_t start(const char *file, char * const *args, bool blocking) {
         exit(EXIT_SUCCESS);
     } else {
         int pid = p;
-        if (!blocking) {
+        if (blocking) {
             wait(&p);
         }
         return pid;
@@ -53,6 +53,9 @@ static void do_system(shell_t *this, const struct StringVector *args)
     // this is ok because size is always at least one when do_{something} is called
     char *last_arg = string_vector_get(args, string_vector_size(args) - 1);
 
+    job_status status = UNKNOWN;
+    pid_t p;
+
     // insane fix for the execvp command
     string_vector_add(args, NULL, NULL);
     if (strcmp(last_arg, "&") == 0) {
@@ -60,17 +63,21 @@ static void do_system(shell_t *this, const struct StringVector *args)
         args->strings[string_vector_size(args) -2] = NULL;
 
         // TODO: add to a jobs datastructure
-        pid_t p = start(file, args->strings + 1, false);
-        printf("started pid: %d\n", p);
-        job_t job = {
+        p = start(file, args->strings + 1, false);
+        status = BG;
+        printf("[+] %d\n", p);
+    } else {
+        p = start(file, args->strings + 1, true);
+        status = FG;
+    }
+
+    job_t job = {
                 .pid = p,
+                .status = status,
         };
 
-        strcpy(job.name, file);
-        shell_add_job(this, job);
-    } else {
-        start(file, args->strings + 1, true);
-    }
+    strcpy(job.name, file);
+    shell_add_job(this, job);
 }
 
 static void do_unknown(shell_t *this, const struct StringVector *args)

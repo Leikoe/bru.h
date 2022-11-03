@@ -24,7 +24,7 @@ int shell_add_job( shell_t *s, job_t job ) {
 
     int i=0;
     while (i < s->jobs_capacity) {
-        if (s->jobs[i].name[0] == '\0') {
+        if (s->jobs[i].status == UNKNOWN) {
             s->jobs[i] = job;
             s->jobs_size++;
             return i;
@@ -40,23 +40,36 @@ void shell_display_jobs( shell_t *s ) {
 
     int i=0;
     while (i < s->jobs_capacity) {
-        if (s->jobs[i].name[0] != '\0') {
+        if (s->jobs[i].status != UNKNOWN) {
             printf("%d      %s\n", s->jobs[i].pid, &s->jobs[i].name[0]);
         }
         i++;
     }
 }
 
-void shell_remove_job( shell_t *s, int job_id) {
-    if (job_id > s->jobs_size) {
-        printf("ERROR: Cannot remove invalid job_id");
-        return;
+
+// returns removed job's status
+job_status shell_remove_job( shell_t *s, pid_t pid ) {
+    int i=0;
+    while (i< s->jobs_capacity) {
+        if (s->jobs[i].pid == pid) {
+            job_status status = s->jobs[i].status;
+
+            s->jobs[i].status = UNKNOWN;
+            s->jobs[i].name[0] = '\0';
+            s->jobs[i].pid = -1;
+
+            printf("\n[-] %d\n", pid);
+
+            return status;
+        }
+        i++;
     }
-    s->jobs[job_id].name[0] = '\0';
-    s->jobs[job_id].pid = -1;
+
+    return UNKNOWN;
 }
 
-void print_prompt() {
+void shell_print_prompt() {
     printf("$");
 
     printf(" ");
@@ -66,7 +79,7 @@ void shell_run( shell_t *s ) {
     s->running = true;
 
     while (s->running) {
-        print_prompt();
+        shell_print_prompt();
         shell_read_line(s);
         shell_execute_line(s);
     }

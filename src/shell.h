@@ -9,8 +9,15 @@
 #ifndef BRU_H_SHELL_H
 #define BRU_H_SHELL_H
 
+typedef enum job_status {
+    UNKNOWN = 0,
+    FG,
+    BG
+} job_status;
+
 typedef struct job_t {
     pid_t  pid;
+    job_status status;
     char   name[50];
 } job_t;
 
@@ -32,7 +39,9 @@ void shell_read_line( shell_t *s );
 void shell_execute_line( shell_t *s );
 
 int shell_add_job( shell_t *s, job_t job );
-void shell_remove_job( shell_t *s, int job_id );
+job_status shell_remove_job( shell_t *s, pid_t pid );
 void shell_display_jobs( shell_t *s );
+
+void shell_print_prompt();
 
 #endif //BRU_H_SHELL_H
