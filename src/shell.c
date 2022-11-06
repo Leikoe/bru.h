@@ -16,10 +16,10 @@ void shell_init( shell_t *s ) {
     s->jobs        = malloc( s->jobs_capacity * sizeof ( job_t ) );
 }
 
-int shell_add_job( shell_t *s, job_t job ) {
+void shell_add_job( shell_t *s, job_t job ) {
     if (s->jobs_size +1 >= s->jobs_capacity) {
         printf("ERROR: Cannot add any more jobs !");
-        return -1;
+        return;
     }
 
     int i=0;
@@ -27,12 +27,13 @@ int shell_add_job( shell_t *s, job_t job ) {
         if (s->jobs[i].status == UNKNOWN) {
             s->jobs[i] = job;
             s->jobs_size++;
-            return i;
+
+            printf("allocated job (%d) \n", i);
+            return;
         }
         i++;
     }
     printf("ERROR: Couldn't find any space to add new job to jobs !");
-    return -1;
 }
 
 void shell_display_jobs( shell_t *s ) {
@@ -52,7 +53,9 @@ void shell_display_jobs( shell_t *s ) {
 job_status shell_remove_job( shell_t *s, pid_t pid ) {
     int i=0;
     while (i< s->jobs_capacity) {
-        if (s->jobs[i].pid == pid) {
+        printf("yeet\n");
+
+        if (s->jobs[i].pid == pid && s->jobs[i].status != UNKNOWN) {
             job_status status = s->jobs[i].status;
 
             s->jobs[i].status = UNKNOWN;

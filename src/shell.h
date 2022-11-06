@@ -11,8 +11,8 @@
 
 typedef enum job_status {
     UNKNOWN = 0,
-    FG,
-    BG
+    FG = 1,
+    BG = 2
 } job_status;
 
 typedef struct job_t {
@@ -38,7 +38,7 @@ void shell_free( shell_t *s );
 void shell_read_line( shell_t *s );
 void shell_execute_line( shell_t *s );
 
-int shell_add_job( shell_t *s, job_t job );
+void shell_add_job( shell_t *s, job_t job );
 job_status shell_remove_job( shell_t *s, pid_t pid );
 void shell_display_jobs( shell_t *s );
 

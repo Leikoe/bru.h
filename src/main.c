@@ -8,7 +8,8 @@ void handle_sigchld(int sig) {
 
     // print prompt again if process was FG, BG shouldn't write to stdout so no need
     job_status s = shell_remove_job(&shell, p);
-    if (s == FG) {
+    printf("finished job status: %d\n", s);
+    if (s == BG) {
         shell_print_prompt();
     }
 }

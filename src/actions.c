@@ -5,6 +5,7 @@
 #include "string.h"
 #include "stdlib.h"
 #include <stdbool.h>
+#include <fcntl.h>
 
 
 static void do_exit(shell_t *this, const struct StringVector *args)
@@ -36,15 +37,24 @@ static void do_help(shell_t *this, const struct StringVector *args)
 pid_t start(const char *file, char * const *args, bool blocking) {
     pid_t p = fork();
     if (p == 0) {
+        // suppress output
+        if (!blocking) {
+            /* open /dev/null for writing  */
+            int fd = open("/dev/null", O_WRONLY);
+
+            dup2(fd, 1); // replace stdout by cpy of /dev/null
+            dup2(fd, 2); // same with stderr
+            close(fd); // close the file descriptor
+        }
+
         execvp(file, args);
         exit(EXIT_SUCCESS);
-    } else {
-        int pid = p;
-        if (blocking) {
-            wait(&p);
-        }
-        return pid;
     }
+    int pid = p;
+    if (blocking) {
+        wait(&p);
+    }
+    return pid;
 }
 
 static void do_system(shell_t *this, const struct StringVector *args)
@@ -66,10 +76,15 @@ static void do_system(shell_t *this, const struct StringVector *args)
         p = start(file, args->strings + 1, false);
         status = BG;
         printf("[+] %d\n", p);
+        printf("[DEBUG] started process in BG (%d)\n", status);
     } else {
         p = start(file, args->strings + 1, true);
         status = FG;
+
+        printf("[DEBUG] started process in FG (%d)\n", status);
     }
+
+    printf("pid: %d\n", p);
 
     job_t job = {
                 .pid = p,
