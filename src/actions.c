@@ -21,7 +21,7 @@ static void do_cd(shell_t *this, const struct StringVector *args)
 
 static void do_pwd(shell_t *this, const struct StringVector *args)
 {
-    system("pwd");
+    // system("pwd");
     args;
 }
 
