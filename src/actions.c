@@ -33,20 +33,21 @@ static void do_help(shell_t *this, const struct StringVector *args)
 
 static void do_system(shell_t *this, const struct StringVector *args)
 {
-    char *shell_env_var = getenv("SHELL");
-    char *command = malloc(sizeof(char) * string_vector_size(args));
-    sprintf(command, "%s %s", shell_env_var, (char *)(this->buffer +1));
-    system(command);
-    args;
+    char *file = string_vector_get(args, 1);
+    string_vector_add(args, NULL, NULL);
+
+    pid_t p = fork();
+    if (p == 0) {
+        execvp(file, args->strings + 1);
+        exit(EXIT_SUCCESS);
+    }
+
+    wait(&p);
 }
 
-static void do_execute(shell_t *this, const struct StringVector *args)
+static void do_unknown(shell_t *this, const struct StringVector *args)
 {
-    char *file = string_vector_get(args, 0);
-//    char *args_ = string_vector_slice(args, 1);
-//    if (file != NULL && fork()==0) {
-//        execlp(file, args);
-//    }
+    printf("unknown command !\n");
 }
 
 static struct {
@@ -59,7 +60,7 @@ static struct {
         { .name = "help", .action = do_help},
         { .name = "?",    .action = do_help},
         { .name = "!",    .action = do_system},
-        { .name = NULL,   .action = do_execute}
+        { .name = NULL,   .action = do_unknown}
 };
 
 Action get_action(char * name)

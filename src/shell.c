@@ -35,16 +35,16 @@ void shell_read_line( shell_t *s ) {
 }
 
 void shell_execute_line( shell_t *s ) {
-    struct StringVector sv = split_line(s->buffer);
-    char *cmd = string_vector_get(&sv,0);
+    struct StringVector tokens = split_line(s->buffer);
+    int nb_tokens = string_vector_size(&tokens);
 
-    if (cmd == NULL) {
-        return;
+    if (nb_tokens == 0) {
+        printf("-> Nothing to do !\n");
+    } else {
+        char *name = string_vector_get(&tokens, 0);
+        Action action = get_action(name);
+        action(s, & tokens);
+
+        string_vector_free(& tokens);
     }
-
-    Action a = get_action(cmd);
-    a(s, &sv);
-
-    printf("\n");
-    string_vector_free(&sv);
 }
