@@ -63,7 +63,6 @@ static void do_system(shell_t *this, const struct StringVector *args)
     // this is ok because size is always at least one when do_{something} is called
     char *last_arg = string_vector_get(args, string_vector_size(args) - 1);
 
-    job_status status = UNKNOWN;
     pid_t p;
 
     // insane fix for the execvp command
@@ -74,25 +73,19 @@ static void do_system(shell_t *this, const struct StringVector *args)
 
         // TODO: add to a jobs datastructure
         p = start(file, args->strings + 1, false);
-        status = BG;
-        printf("[+] %d\n", p);
-        printf("[DEBUG] started process in BG (%d)\n", status);
-    } else {
-        p = start(file, args->strings + 1, true);
-        status = FG;
 
-        printf("[DEBUG] started process in FG (%d)\n", status);
-    }
-
-    printf("pid: %d\n", p);
-
-    job_t job = {
+        job_t job = {
                 .pid = p,
-                .status = status,
+                .status = BG,
         };
 
-    strcpy(job.name, file);
-    shell_add_job(this, job);
+        strcpy(job.name, file);
+
+        shell_add_job(this, job);
+        printf("[+] %d\n", p);
+    } else {
+        p = start(file, args->strings + 1, true);
+    }
 }
 
 static void do_unknown(shell_t *this, const struct StringVector *args)
