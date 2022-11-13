@@ -1,3 +1,6 @@
 *.o
 build
-
+main.dSYM
+cmake-build-debug
+main
+.idea

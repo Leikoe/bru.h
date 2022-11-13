@@ -4,11 +4,14 @@
 #include <unistd.h>
 #include "string.h"
 #include "stdlib.h"
+#include <stdbool.h>
+#include <fcntl.h>
+
 
 static void do_exit(shell_t *this, const struct StringVector *args)
 {
     this->running = false;
-    printf("quitting shell..");
+    printf("quitting shell..\n");
     args;
 }
 
@@ -34,27 +37,74 @@ static void do_pwd(shell_t *this, const struct StringVector *args)
 
 static void do_help(shell_t *this, const struct StringVector *args)
 {
-    printf("-> commands: exit, cd, help, ?.\n");
+    printf("-> commands: exit, cd, help, ?\n");
     args;
+}
+
+pid_t start(const char *file, char * const *args, bool blocking) {
+    pid_t p = fork();
+    if (p == 0) {
+        // suppress output
+        if (!blocking) {
+            /* open /dev/null for writing  */
+            //int fd = open("/dev/null", O_WRONLY);
+
+            //dup2(fd, 1); // replace stdout by cpy of /dev/null
+            //dup2(fd, 2); // same with stderr
+            //close(fd); // close the file descriptor
+        }
+
+        execvp(file, args);
+        exit(EXIT_SUCCESS);
+    }
+    int pid = p;
+    if (blocking) {
+        wait(&p);
+    }
+    return pid;
 }
 
 static void do_system(shell_t *this, const struct StringVector *args)
 {
     char *file = string_vector_get(args, 1);
-    string_vector_add(args, NULL, NULL);
+    // this is ok because size is always at least one when do_{something} is called
+    char *last_arg = string_vector_get(args, string_vector_size(args) - 1);
 
-    pid_t p = fork();
-    if (p == 0) {
-        execvp(file, args->strings + 1);
-        exit(EXIT_SUCCESS);
+    pid_t p;
+
+    // insane fix for the execvp command
+    string_vector_add(args, NULL, NULL);
+    if (strcmp(last_arg, "&") == 0) {
+        // remove the & from the args
+        args->strings[string_vector_size(args) -2] = NULL;
+
+        // TODO: add to a jobs datastructure
+        p = start(file, args->strings + 1, false);
+
+        job_t job = {
+                .pid = p,
+                .status = BG,
+        };
+
+        strcpy(job.name, file);
+
+        shell_add_job(this, job);
+        printf("[+] %d\n", p);
+    } else {
+        p = start(file, args->strings + 1, true);
     }
-    wait(&p);
 }
 
 static void do_unknown(shell_t *this, const struct StringVector *args)
 {
     printf("unknown command !\n");
 }
+
+static void do_jobs(shell_t *this, const struct StringVector *args)
+{
+    shell_display_jobs(this);
+}
+
 
 static void do_list(shell_t *this, const struct StringVector *args)
 {
@@ -156,6 +206,7 @@ static struct {
         { .name = "cd",   .action = do_cd},
         { .name = "pwd",  .action = do_pwd},
         { .name = "help", .action = do_help},
+        { .name = "jobs", .action = do_jobs},
         { .name = "?",    .action = do_help},
         { .name = "!",    .action = do_system},
         { .name = "ls",   .action = do_list},
