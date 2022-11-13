@@ -109,7 +109,7 @@ void shell_execute_line( shell_t *s ) {
         char *name = string_vector_get(&tokens, 0);
         Action action = get_action(name);
         action(s, & tokens);
-
-        string_vector_free(& tokens);
     }
+
+    string_vector_free(&tokens);
 }
