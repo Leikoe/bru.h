@@ -95,8 +95,10 @@ void shell_free( shell_t *s ) {
 void shell_read_line( shell_t *s ) {
     // man 3 getline
     s->line_number++;
-    size_t linelen;
-    linelen = getline( &(s->buffer), &( s->buffer_size ), stdin );
+    size_t linelen = -1;
+    while (linelen == -1) {
+        linelen = getline( &(s->buffer), &( s->buffer_size ), stdin );
+    }
 }
 
 void shell_execute_line( shell_t *s ) {
