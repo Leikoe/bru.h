@@ -40,11 +40,11 @@ pid_t start(const char *file, char * const *args, bool blocking) {
         // suppress output
         if (!blocking) {
             /* open /dev/null for writing  */
-            int fd = open("/dev/null", O_WRONLY);
+            //int fd = open("/dev/null", O_WRONLY);
 
-            dup2(fd, 1); // replace stdout by cpy of /dev/null
-            dup2(fd, 2); // same with stderr
-            close(fd); // close the file descriptor
+            //dup2(fd, 1); // replace stdout by cpy of /dev/null
+            //dup2(fd, 2); // same with stderr
+            //close(fd); // close the file descriptor
         }
 
         execvp(file, args);

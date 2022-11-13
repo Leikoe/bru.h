@@ -53,7 +53,6 @@ void shell_display_jobs( shell_t *s ) {
 job_status shell_remove_job( shell_t *s, pid_t pid ) {
     int i=0;
     while (i< s->jobs_capacity) {
-        printf("yeet\n");
 
         if (s->jobs[i].pid == pid && s->jobs[i].status != UNKNOWN) {
             job_status status = s->jobs[i].status;
@@ -76,6 +75,7 @@ void shell_print_prompt() {
     printf("$");
 
     printf(" ");
+    fflush(stdout);
 }
 
 void shell_run( shell_t *s ) {
