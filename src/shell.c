@@ -100,6 +100,7 @@ void shell_read_line( shell_t *s ) {
 	clearerr(stdin);
         linelen = getline( &(s->buffer), &( s->buffer_size ), stdin );
     }
+    printf("%s", s->buffer);
 }
 
 void shell_execute_line( shell_t *s ) {

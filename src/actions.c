@@ -44,16 +44,6 @@ static void do_help(shell_t *this, const struct StringVector *args)
 pid_t start(const char *file, char * const *args, bool blocking) {
     pid_t p = fork();
     if (p == 0) {
-        // suppress output
-        if (!blocking) {
-            /* open /dev/null for writing  */
-            //int fd = open("/dev/null", O_WRONLY);
-
-            //dup2(fd, 1); // replace stdout by cpy of /dev/null
-            //dup2(fd, 2); // same with stderr
-            //close(fd); // close the file descriptor
-        }
-
         execvp(file, args);
         exit(EXIT_SUCCESS);
     }
