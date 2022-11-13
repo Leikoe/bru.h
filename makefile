@@ -1,6 +1,6 @@
 CFLAGS= -g -std=c11 -Wall -Wextra -pedantic -D_XOPEN_SOURCE=700
 
-all: bruh run
+all: bruh
 
 run:
 	./main
