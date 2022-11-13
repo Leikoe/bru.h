@@ -6,7 +6,6 @@ static shell_t shell;
 
 void handle_sigchld(int sig) {
     pid_t p = wait(NULL);
-
     // print prompt again if process was FG, BG shouldn't write to stdout so no need
     job_status s = shell_remove_job(&shell, p);
     printf("finished job status: %d\n", s);

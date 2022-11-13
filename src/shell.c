@@ -97,6 +97,7 @@ void shell_read_line( shell_t *s ) {
     s->line_number++;
     size_t linelen = -1;
     while (linelen == -1) {
+	clearerr(stdin);
         linelen = getline( &(s->buffer), &( s->buffer_size ), stdin );
     }
 }
