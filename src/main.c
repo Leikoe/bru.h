@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include "shell.h"
+#include <signal.h>
 
 static shell_t shell;
 
